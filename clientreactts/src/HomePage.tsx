@@ -6,7 +6,7 @@ import { QuestionList } from './QuestionList';
 import { getUnansweredQuestions, QuestionData } from './QuestionData';
 import { Page } from './Page';
 import { PageTitle } from './PageTitle';
-import { flattenDiagnosticMessageText } from 'typescript';
+import { useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
   const [questions, setQuestions] = React.useState<QuestionData[]>([]);
@@ -21,8 +21,10 @@ export const HomePage = () => {
     doGetUnansweredQuestions();
   }, []);
 
+  const navigate = useNavigate();
   const handleAskQuestionClick = () => {
     console.log('TODO - move the AskPage');
+    navigate('ask');
   };
   return (
     <Page>

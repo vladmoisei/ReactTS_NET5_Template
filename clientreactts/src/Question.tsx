@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { gray2, gray3 } from './Styles';
 import React from 'react';
 import { QuestionData } from './QuestionData';
-import { QuestionList } from './QuestionList';
+import { Link } from 'react-router-dom';
 
 interface Props {
   data: QuestionData;
@@ -23,7 +23,15 @@ export const Question = ({ data, showContent = true }: Props) => (
           font-size: 19px;
         `}
       >
-        {data.title}
+        <Link
+          css={css`
+            text-decoration: none;
+            color: ${gray2};
+          `}
+          to={`/questions/${data.questionId}`}
+        >
+          {data.title}
+        </Link>
       </div>
       {showContent && (
         <div
@@ -42,7 +50,7 @@ export const Question = ({ data, showContent = true }: Props) => (
         css={css`
           font-size: 12px;
           font-style: italic;
-          colorL ${gray3};
+          color: ${gray3};
         `}
       >
         {`Asked by ${data.userName} on 
