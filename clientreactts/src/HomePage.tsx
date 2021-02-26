@@ -2,24 +2,35 @@
 import { css } from '@emotion/react';
 import { PrimaryButton } from './Styles';
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  gettingUnansweredQuestionsAction,
+  gotUnansweredQuestionsAction,
+  AppState,
+} from './Store';
 import { QuestionList } from './QuestionList';
-import { getUnansweredQuestions, QuestionData } from './QuestionData';
+import { getUnansweredQuestions } from './QuestionData';
 import { Page } from './Page';
 import { PageTitle } from './PageTitle';
 import { useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
-  const [questions, setQuestions] = React.useState<QuestionData[]>([]);
-  const [questionLoading, setQuestionLoading] = React.useState(true);
+  const dispatch = useDispatch();
+  const questions = useSelector(
+    (state: AppState) => state.questions.unanswered,
+  );
+  const questionsLoading = useSelector(
+    (state: AppState) => state.questions.loading,
+  );
 
   React.useEffect(() => {
     const doGetUnansweredQuestions = async () => {
+      dispatch(gettingUnansweredQuestionsAction());
       const unansweredQuestions = await getUnansweredQuestions();
-      setQuestions(unansweredQuestions);
-      setQuestionLoading(false);
+      dispatch(gotUnansweredQuestionsAction(unansweredQuestions));
     };
     doGetUnansweredQuestions();
-  }, []);
+  }, [dispatch]);
 
   const navigate = useNavigate();
   const handleAskQuestionClick = () => {
@@ -40,7 +51,7 @@ export const HomePage = () => {
           Ask a question
         </PrimaryButton>
       </div>
-      {questionLoading ? (
+      {questionsLoading ? (
         <div>Loading ... </div>
       ) : (
         <QuestionList data={questions || []} />

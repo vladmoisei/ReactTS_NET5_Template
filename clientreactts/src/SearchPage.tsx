@@ -1,23 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  AppState,
+  searchingQuestionsAction,
+  searchedQuestionsAction,
+} from './Store';
 import { useSearchParams } from 'react-router-dom';
 import { QuestionList } from './QuestionList';
-import { searchQuestions, QuestionData } from './QuestionData';
+import { searchQuestions } from './QuestionData';
 import React from 'react';
 import { Page } from './Page';
-import { QuestionPage } from './QuestionPage';
 
 export const SearchPage = () => {
+  const dispatch = useDispatch();
+  const questions = useSelector((state: AppState) => state.questions.searched);
   const [searchParams] = useSearchParams();
-  const [questions, SetQuestions] = React.useState<QuestionData[]>([]);
   const search = searchParams.get('criteria') || '';
   React.useEffect(() => {
     const doSearch = async (criteria: string) => {
+      dispatch(searchingQuestionsAction());
       const foundResults = await searchQuestions(criteria);
-      SetQuestions(foundResults);
+      dispatch(searchedQuestionsAction(foundResults));
     };
     doSearch(search);
-  }, [search]);
+  }, [dispatch, search]);
   return (
     <Page title="Search Results">
       {search && (
